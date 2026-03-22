@@ -22,7 +22,7 @@ function Spinner() {
   )
 }
 
-type FieldErrors = { name?: string; title?: string; description?: string; link?: string }
+type FieldErrors = { name?: string; description?: string; link?: string }
 
 function Field({
   id, label, optional, error, delay = 0, children,
@@ -89,8 +89,7 @@ const inputErrorCls =
 
 export default function SubmitForm() {
   const [name, setName]               = useState('')
-  const [title, setTitle]             = useState('')
-  const [description, setDescription] = useState('')
+const [description, setDescription] = useState('')
   const [link, setLink]               = useState('')
   const [loading, setLoading]         = useState(false)
   const [submitted, setSubmitted]     = useState(false)
@@ -105,8 +104,7 @@ export default function SubmitForm() {
   function validate(): FieldErrors {
     const e: FieldErrors = {}
     if (!name.trim())        e.name        = 'Name is required'
-    if (!title.trim())       e.title       = 'Give your ship a headline'
-    if (!description.trim()) e.description = 'Tell us what you built'
+if (!description.trim()) e.description = 'Tell us what you built'
     if (link.trim() && !isValidUrl(link.trim())) e.link = 'Must be a valid URL (https://...)'
     return e
   }
@@ -122,8 +120,8 @@ export default function SubmitForm() {
     setErrors({})
     setLoading(true)
     try {
-      await insertPost(sanitize(name), sanitize(title), sanitize(description), link.trim() || null)
-      setName(''); setTitle(''); setDescription(''); setLink('')
+      await insertPost(sanitize(name), sanitize(description), link.trim() || null)
+      setName(''); setDescription(''); setLink('')
       setSubmitted(true)
       setTimeout(() => setSubmitted(false), 1800)
       showToast('success', 'Shipped! Your post is live 🚀')
@@ -176,19 +174,8 @@ export default function SubmitForm() {
           />
         </Field>
 
-        {/* Title */}
-        <Field id="title" label="Headline" error={errors.title} delay={60}>
-          <input
-            id="title" type="text" value={title}
-            placeholder="e.g. Launched my SaaS in a weekend"
-            onChange={e => { setTitle(e.target.value); clearErr('title') }}
-            className={errors.title ? `${inputErrorCls} [animation-iteration-count:1]` : inputNormal}
-            key={errors.title ? `title-err-${shakeKey}` : 'title'}
-          />
-        </Field>
-
         {/* Description */}
-        <Field id="description" label="What you built" error={errors.description} delay={120}>
+        <Field id="description" label="What you built" error={errors.description} delay={60}>
           <div className="relative">
             <textarea
               id="description" rows={4} value={description}
@@ -205,7 +192,7 @@ export default function SubmitForm() {
         </Field>
 
         {/* Link */}
-        <Field id="link" label="Link" optional error={errors.link} delay={180}>
+        <Field id="link" label="Link" optional error={errors.link} delay={120}>
           <div className="relative">
             <div className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none">
               <svg className="h-3.5 w-3.5 text-zinc-600 group-focus-within/field:text-zinc-400 transition-colors duration-200"

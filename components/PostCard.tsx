@@ -96,13 +96,6 @@ export default function PostCard({ post, animateIn = false }: { post: Post; anim
         )}
       </div>
 
-      {/* Title */}
-      {post.title && (
-        <h3 className="text-white font-semibold text-[15px] leading-snug mb-2">
-          {post.title}
-        </h3>
-      )}
-
       {/* Description */}
       <p className="text-[13px] text-zinc-400 leading-relaxed">{post.description}</p>
 
