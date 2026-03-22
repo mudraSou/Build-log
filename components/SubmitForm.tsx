@@ -120,7 +120,8 @@ if (!description.trim()) e.description = 'Tell us what you built'
     setErrors({})
     setLoading(true)
     try {
-      await insertPost(sanitize(name), sanitize(description), link.trim() || null)
+      const newPost = await insertPost(sanitize(name), sanitize(description), link.trim() || null)
+      window.dispatchEvent(new CustomEvent('post-submitted', { detail: newPost }))
       setName(''); setDescription(''); setLink('')
       setSubmitted(true)
       setTimeout(() => setSubmitted(false), 1800)

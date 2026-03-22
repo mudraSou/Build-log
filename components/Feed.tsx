@@ -43,13 +43,34 @@ export default function Feed() {
 
   useEffect(() => {
     load()
+
+    // Own post submitted — show immediately, no banner
+    function handleOwn(e: Event) {
+      const post = (e as CustomEvent<Post>).detail
+      setPosts(prev => [post, ...prev])
+      setNewIds(new Set([post.id]))
+      setTimeout(() => setNewIds(new Set()), 3500)
+    }
+    window.addEventListener('post-submitted', handleOwn)
+
+    // Other users' posts — queue in banner
     const channel = supabase
       .channel('posts-feed')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'posts' }, (payload) => {
-        setPending(prev => [payload.new as Post, ...prev])
+        const incoming = payload.new as Post
+        // Skip if we already added it via the own-post event
+        setPosts(current => {
+          if (current.find(p => p.id === incoming.id)) return current
+          setPending(prev => [incoming, ...prev])
+          return current
+        })
       })
       .subscribe()
-    return () => { supabase.removeChannel(channel) }
+
+    return () => {
+      window.removeEventListener('post-submitted', handleOwn)
+      supabase.removeChannel(channel)
+    }
   }, [])
 
   function showPending() {
