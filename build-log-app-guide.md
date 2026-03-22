@@ -223,13 +223,26 @@ build-log/
 
 ---
 
+## How Realtime Works
+
+| Event | Behaviour |
+|---|---|
+| You submit a post | Appears **instantly** at the top with a green NEW badge — no click needed |
+| Someone else posts | Queues silently — a "↑ N new ships" banner appears, you tap to reveal |
+| Duplicate guard | If realtime also fires for your own post, it's detected and skipped (no double entry) |
+
+This is handled via a browser `CustomEvent` (`post-submitted`) fired from SubmitForm after a successful insert. Feed listens for it and inserts directly, bypassing the pending queue. The Supabase realtime channel only handles other users' posts.
+
+---
+
 ## What You End Up With
 
 | Capability | How |
 |---|---|
 | Public feed, no login | Supabase anon key + open RLS policies |
 | Instant updates | Supabase Realtime channel on posts table |
-| New post queue banner | Pending state in Feed — user chooses when to reveal |
+| Own post instant feedback | CustomEvent fires on submit → Feed inserts immediately |
+| New post queue banner | Other users' posts queue in banner — user chooses when to reveal |
 | Consistent avatar colors | Name hash → 12-color palette |
 | 40/60 split layout | Left form sticky, right feed scrollable |
 | Microinteractions | CSS keyframes + Tailwind transitions throughout |
