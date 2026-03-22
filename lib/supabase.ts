@@ -18,12 +18,13 @@ export async function fetchPosts(): Promise<Post[]> {
 
 export async function insertPost(
   name: string,
+  title: string,
   description: string,
   link: string | null
 ): Promise<Post> {
   const { data, error } = await supabase
     .from('posts')
-    .insert({ name, description, link })
+    .insert({ name, title, description, link })
     .select()
     .single()
 

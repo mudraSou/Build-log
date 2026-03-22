@@ -3,28 +3,69 @@
 @tailwind utilities;
 
 @layer utilities {
-  .animate-slide-down {
-    animation: slideDown 0.2s ease-out;
-  }
-  .animate-fade-up {
-    animation: fadeUp 0.3s ease-out;
-  }
+  .animate-slide-down   { animation: slideDown  0.25s cubic-bezier(0.16,1,0.3,1); }
+  .animate-fade-up      { animation: fadeUp     0.4s  cubic-bezier(0.16,1,0.3,1) both; }
+  .animate-bounce-in    { animation: bounceIn   0.4s  cubic-bezier(0.16,1,0.3,1); }
+  .animate-shimmer      { animation: shimmer    1.6s  linear infinite; }
+  .animate-shake        { animation: shake      0.4s  cubic-bezier(0.36,0.07,0.19,0.97); }
+  .animate-panel-in     { animation: panelIn    0.5s  cubic-bezier(0.16,1,0.3,1) both; }
 }
 
 @keyframes slideDown {
-  from { transform: translateY(-10px); opacity: 0; }
+  from { transform: translateY(-12px); opacity: 0; }
   to   { transform: translateY(0);     opacity: 1; }
 }
-
 @keyframes fadeUp {
-  from { transform: translateY(6px); opacity: 0; }
-  to   { transform: translateY(0);   opacity: 1; }
+  from { transform: translateY(10px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+@keyframes bounceIn {
+  0%   { transform: scale(0.92); opacity: 0; }
+  60%  { transform: scale(1.03); }
+  100% { transform: scale(1);    opacity: 1; }
+}
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+@keyframes shake {
+  0%,100% { transform: translateX(0);   }
+  15%     { transform: translateX(-5px);}
+  30%     { transform: translateX(5px); }
+  45%     { transform: translateX(-3px);}
+  60%     { transform: translateX(3px); }
+  80%     { transform: translateX(-1px);}
+}
+@keyframes panelIn {
+  from { transform: translateX(-18px); opacity: 0; }
+  to   { transform: translateX(0);     opacity: 1; }
 }
 
-html {
-  scroll-behavior: smooth;
+/* Button shimmer sweep */
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.btn-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -80%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0,0,0,0.07), transparent);
+  transform: skewX(-15deg);
+  pointer-events: none;
+}
+.btn-shimmer:hover::after {
+  animation: btnSweep 0.55s ease forwards;
+}
+@keyframes btnSweep {
+  to { left: 160%; }
 }
 
-::selection {
-  background: rgba(255,255,255,0.15);
-}
+html { scroll-behavior: smooth; }
+
+.feed-scroll::-webkit-scrollbar { width: 0; }
+.feed-scroll { scrollbar-width: none; }
+
+::selection { background: rgba(255,255,255,0.12); }
